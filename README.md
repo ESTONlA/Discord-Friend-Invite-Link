@@ -1,7 +1,5 @@
-![Stars](https://img.shields.io/github/stars/ESTONlA/Discord-Friend-Invite-Link?style=for-the-badge)
 ![Last Commit](https://img.shields.io/github/last-commit/ESTONlA/Discord-Friend-Invite-Link?style=for-the-badge)
-![Repo Size](https://img.shields.io/github/repo-size/ESTONlA/Discord-Friend-Invite-Link?style=for-the-badge)
-![Contributors](https://img.shields.io/github/contributors/ESTONlA/Discord-Friend-Invite-Link?style=for-the-badge)
+
 # Discord Friend Invites
 See the [LICENSE](LICENSE) file for details.
 

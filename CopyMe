@@ -1,0 +1,312 @@
+/* Discord Friend Invites – by Estonia */
+
+(async () => {
+
+let token
+let div
+let clicked = false
+let offsetLeft = 0
+let offsetTop = 0
+
+const html = `
+<div id="efi_window">
+  <div id="efi_header">
+      <div>
+        <div class="efi_title">Discord Friend Invites</div>
+        <div class="efi_sub">by Estonia</div>
+      </div>
+      <div id="efi_close">✕</div>
+  </div>
+
+  <div class="efi_body">
+
+      <div class="efi_section">
+        <div class="efi_label">Create Invite</div>
+        <button id="efi_create" class="efi_btn_primary">Create</button>
+      </div>
+
+      <div class="efi_section">
+        <div class="efi_label">View Invite</div>
+        <select id="efi_select"></select>
+        <button id="efi_info" class="efi_btn">Info</button>
+      </div>
+
+      <div id="efi_output" class="efi_output">
+        Welcome
+      </div>
+
+      <button id="efi_delete" class="efi_btn_danger">
+        Delete All Invites
+      </button>
+
+  </div>
+</div>
+`
+
+const css = `
+#efi_window{
+ position:absolute;
+ top:120px;
+ left:120px;
+ width:420px;
+ background:#1e1f22;
+ border-radius:14px;
+ box-shadow:0 10px 35px rgba(0,0,0,0.6);
+ font-family:var(--font-primary);
+ color:white;
+ z-index:999999;
+}
+
+#efi_header{
+ padding:14px;
+ background:#5865F2;
+ border-radius:14px 14px 0 0;
+ cursor:move;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.efi_title{
+ font-weight:700;
+ font-size:16px;
+}
+
+.efi_sub{
+ font-size:12px;
+ opacity:.8;
+}
+
+#efi_close{
+ cursor:pointer;
+ font-size:18px;
+}
+
+.efi_body{
+ padding:16px;
+}
+
+.efi_section{
+ margin-bottom:12px;
+}
+
+.efi_label{
+ font-size:14px;
+ margin-bottom:6px;
+}
+
+select{
+ width:100%;
+ padding:6px;
+ border:none;
+ border-radius:6px;
+ background:#2b2d31;
+ color:white;
+ margin-bottom:6px;
+}
+
+button{
+ border:none;
+ border-radius:6px;
+ padding:6px 12px;
+ font-weight:600;
+ cursor:pointer;
+}
+
+.efi_btn_primary{
+ background:#5865F2;
+ color:white;
+}
+
+.efi_btn_primary:hover{
+ background:#4752c4;
+}
+
+.efi_btn{
+ background:#4e5058;
+ color:white;
+}
+
+.efi_btn:hover{
+ background:#6d6f78;
+}
+
+.efi_btn_danger{
+ width:100%;
+ margin-top:12px;
+ background:#ed4245;
+ color:white;
+}
+
+.efi_btn_danger:hover{
+ background:#c03537;
+}
+
+.efi_output{
+ margin-top:10px;
+ background:#2b2d31;
+ padding:10px;
+ border-radius:6px;
+ text-align:center;
+ user-select:all;
+}
+`
+
+function inject(){
+ const wrapper = document.createElement("div")
+ wrapper.innerHTML = html + `<style>${css}</style>`
+ document.body.appendChild(wrapper)
+
+ div = document.getElementById("efi_window")
+
+ document.getElementById("efi_header").addEventListener("mousedown",mouseDown)
+ window.addEventListener("mouseup",mouseUp)
+ window.addEventListener("mousemove",move)
+
+ document.getElementById("efi_close").onclick = removeUI
+ document.getElementById("efi_create").onclick = createInvite
+ document.getElementById("efi_info").onclick = infoInvite
+ document.getElementById("efi_delete").onclick = deleteInvites
+
+ getToken().then(t=>{
+  token = t
+  fetchInvites()
+ })
+}
+
+function mouseDown(e){
+ clicked = true
+ offsetLeft = div.offsetLeft - e.clientX
+ offsetTop = div.offsetTop - e.clientY
+}
+
+function mouseUp(){
+ clicked = false
+}
+
+function move(e){
+ if(!clicked) return
+ div.style.left = e.clientX + offsetLeft + "px"
+ div.style.top = e.clientY + offsetTop + "px"
+}
+
+async function createInvite(){
+
+ const out = document.getElementById("efi_output")
+ out.innerText = "Creating..."
+
+ const r = await fetch("https://discord.com/api/v9/users/@me/invites",{
+  method:"POST",
+  headers:{
+   "Authorization":token,
+   "Content-Type":"application/json"
+  },
+  body:"{}"
+ })
+
+ const j = await r.json()
+
+ out.innerHTML = `https://discord.gg/${j.code}`
+
+ fetchInvites()
+}
+
+async function fetchInvites(){
+
+ const r = await fetch("https://discord.com/api/v9/users/@me/invites",{
+  headers:{
+   "Authorization":token
+  }
+ })
+
+ const list = await r.json()
+
+ const sel = document.getElementById("efi_select")
+ sel.innerHTML = ""
+
+ if(!list.length){
+  const o = document.createElement("option")
+  o.text = "No Invites"
+  sel.appendChild(o)
+  return
+ }
+
+ list.forEach(i=>{
+  const o = document.createElement("option")
+  o.value = i.code
+  o.text = `discord.gg/${i.code}`
+  sel.appendChild(o)
+ })
+}
+
+async function infoInvite(){
+
+ const code = document.getElementById("efi_select").value
+ const out = document.getElementById("efi_output")
+
+ const r = await fetch("https://discord.com/api/v9/users/@me/invites",{
+  headers:{
+   "Authorization":token
+  }
+ })
+
+ const list = await r.json()
+
+ const inv = list.find(i=>i.code === code)
+
+ if(!inv){
+  out.innerText = "Invite not found"
+  return
+ }
+
+ out.innerHTML =
+ `Uses: ${inv.uses}/${inv.max_uses}
+ <br>Expires: ${Math.round(inv.max_age/3600)}h
+ <br>https://discord.gg/${inv.code}`
+}
+
+async function deleteInvites(){
+
+ await fetch("https://discord.com/api/v9/users/@me/invites",{
+  method:"DELETE",
+  headers:{
+   "Authorization":token
+  }
+ })
+
+ document.getElementById("efi_output").innerText = "Invites deleted"
+
+ fetchInvites()
+}
+
+function removeUI(){
+ document.getElementById("efi_window").remove()
+}
+
+function getToken(){
+
+ return new Promise(resolve=>{
+
+  const old = window.XMLHttpRequest
+
+  window.XMLHttpRequest = class extends old{
+
+   constructor(){
+    super()
+    const set = this.setRequestHeader
+
+    this.setRequestHeader = function(k,v){
+     if(k === "Authorization"){
+      resolve(v)
+      window.XMLHttpRequest = old
+     }
+     set.apply(this,arguments)
+    }
+   }
+  }
+ })
+}
+
+inject()
+
+})()

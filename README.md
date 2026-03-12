@@ -1,4 +1,4 @@
-<img width="426" height="331" alt="image" src="https://github.com/user-attachments/assets/5c1a1322-7fe5-4d6e-b489-0d430db4b246" />![Last Commit](https://img.shields.io/github/last-commit/ESTONlA/Discord-Friend-Invite-Link?style=for-the-badge)
+![Last Commit](https://img.shields.io/github/last-commit/ESTONlA/Discord-Friend-Invite-Link?style=for-the-badge)
 
 # Discord Friend Invites
 See the [LICENSE](LICENSE) file for details.
@@ -93,5 +93,5 @@ UI and implementation: **Estonia**
 
 
 ShowCase:
-<img width="426" height="331" alt="image" src="https://github.com/user-attachments/assets/17117749-221e-4dd2-8f82-7043cb038cf9" />
 
+<img width="426" height="331" alt="image" src="https://github.com/user-attachments/assets/5c1a1322-7fe5-4d6e-b489-0d430db4b246" />

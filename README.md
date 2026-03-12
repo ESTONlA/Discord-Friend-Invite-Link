@@ -94,4 +94,7 @@ UI and implementation: **Estonia**
 
 ShowCase:
 
-<img width="426" height="331" alt="image" src="https://github.com/user-attachments/assets/5c1a1322-7fe5-4d6e-b489-0d430db4b246" />
+<img width="380" height="754" alt="image" src="https://github.com/user-attachments/assets/a6c5bf34-87d9-45db-908e-2d0eb6d3a765" />
+
+<img width="356" height="774" alt="image" src="https://github.com/user-attachments/assets/2e7739ea-3428-481e-a893-f482fb97f756" />
+
